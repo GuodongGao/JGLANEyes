@@ -1,0 +1,376 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		967A150920A3159C00E4C193 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A150820A3159C00E4C193 /* AppDelegate.m */; };
+		967A150C20A3159C00E4C193 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A150B20A3159C00E4C193 /* ViewController.m */; };
+		967A150E20A3159E00E4C193 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 967A150D20A3159E00E4C193 /* Assets.xcassets */; };
+		967A151120A3159E00E4C193 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 967A150F20A3159E00E4C193 /* Main.storyboard */; };
+		967A151420A3159E00E4C193 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A151320A3159E00E4C193 /* main.m */; };
+		967A151D20A3192A00E4C193 /* JGMacCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A151C20A3192A00E4C193 /* JGMacCamera.m */; };
+		96FFE94120A3D754001AAF2D /* JGMacH264HardwareEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 96FFE94020A3D754001AAF2D /* JGMacH264HardwareEncoder.m */; };
+		96FFE94A20A42047001AAF2D /* JGMacTCPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 96FFE94920A42047001AAF2D /* JGMacTCPServer.m */; };
+		96FFE95120A423D7001AAF2D /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 96FFE94D20A423D7001AAF2D /* GCDAsyncUdpSocket.m */; };
+		96FFE95220A423D7001AAF2D /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 96FFE94E20A423D7001AAF2D /* GCDAsyncSocket.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		967A150420A3159C00E4C193 /* JGLANEyes_Server.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JGLANEyes_Server.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		967A150720A3159C00E4C193 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		967A150820A3159C00E4C193 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		967A150A20A3159C00E4C193 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		967A150B20A3159C00E4C193 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		967A150D20A3159E00E4C193 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		967A151020A3159E00E4C193 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		967A151220A3159E00E4C193 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		967A151320A3159E00E4C193 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		967A151B20A3192A00E4C193 /* JGMacCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JGMacCamera.h; sourceTree = "<group>"; };
+		967A151C20A3192A00E4C193 /* JGMacCamera.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JGMacCamera.m; sourceTree = "<group>"; };
+		967A152120A32E9900E4C193 /* JGLANEyes_Server.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JGLANEyes_Server.entitlements; sourceTree = "<group>"; };
+		96FFE93F20A3D754001AAF2D /* JGMacH264HardwareEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JGMacH264HardwareEncoder.h; sourceTree = "<group>"; };
+		96FFE94020A3D754001AAF2D /* JGMacH264HardwareEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JGMacH264HardwareEncoder.m; sourceTree = "<group>"; };
+		96FFE94820A42047001AAF2D /* JGMacTCPServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JGMacTCPServer.h; sourceTree = "<group>"; };
+		96FFE94920A42047001AAF2D /* JGMacTCPServer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JGMacTCPServer.m; sourceTree = "<group>"; };
+		96FFE94D20A423D7001AAF2D /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		96FFE94E20A423D7001AAF2D /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		96FFE94F20A423D7001AAF2D /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		96FFE95020A423D7001AAF2D /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		967A150120A3159C00E4C193 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		967A14FB20A3159C00E4C193 = {
+			isa = PBXGroup;
+			children = (
+				967A150620A3159C00E4C193 /* JGLANEyes_Server */,
+				967A150520A3159C00E4C193 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		967A150520A3159C00E4C193 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				967A150420A3159C00E4C193 /* JGLANEyes_Server.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		967A150620A3159C00E4C193 /* JGLANEyes_Server */ = {
+			isa = PBXGroup;
+			children = (
+				967A152120A32E9900E4C193 /* JGLANEyes_Server.entitlements */,
+				967A150720A3159C00E4C193 /* AppDelegate.h */,
+				967A150820A3159C00E4C193 /* AppDelegate.m */,
+				967A150A20A3159C00E4C193 /* ViewController.h */,
+				967A150B20A3159C00E4C193 /* ViewController.m */,
+				967A151B20A3192A00E4C193 /* JGMacCamera.h */,
+				967A151C20A3192A00E4C193 /* JGMacCamera.m */,
+				96FFE93F20A3D754001AAF2D /* JGMacH264HardwareEncoder.h */,
+				96FFE94020A3D754001AAF2D /* JGMacH264HardwareEncoder.m */,
+				96FFE94820A42047001AAF2D /* JGMacTCPServer.h */,
+				96FFE94920A42047001AAF2D /* JGMacTCPServer.m */,
+				96FFE94C20A423D7001AAF2D /* GCDAsyncSocket */,
+				967A150D20A3159E00E4C193 /* Assets.xcassets */,
+				967A150F20A3159E00E4C193 /* Main.storyboard */,
+				967A151220A3159E00E4C193 /* Info.plist */,
+				967A151320A3159E00E4C193 /* main.m */,
+			);
+			path = JGLANEyes_Server;
+			sourceTree = "<group>";
+		};
+		96FFE94C20A423D7001AAF2D /* GCDAsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				96FFE94D20A423D7001AAF2D /* GCDAsyncUdpSocket.m */,
+				96FFE94E20A423D7001AAF2D /* GCDAsyncSocket.m */,
+				96FFE94F20A423D7001AAF2D /* GCDAsyncUdpSocket.h */,
+				96FFE95020A423D7001AAF2D /* GCDAsyncSocket.h */,
+			);
+			path = GCDAsyncSocket;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		967A150320A3159C00E4C193 /* JGLANEyes_Server */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 967A151820A3159E00E4C193 /* Build configuration list for PBXNativeTarget "JGLANEyes_Server" */;
+			buildPhases = (
+				967A150020A3159C00E4C193 /* Sources */,
+				967A150120A3159C00E4C193 /* Frameworks */,
+				967A150220A3159C00E4C193 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = JGLANEyes_Server;
+			productName = JGLANEyes_Server;
+			productReference = 967A150420A3159C00E4C193 /* JGLANEyes_Server.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		967A14FC20A3159C00E4C193 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = mtgao;
+				TargetAttributes = {
+					967A150320A3159C00E4C193 = {
+						CreatedOnToolsVersion = 9.3;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = 967A14FF20A3159C00E4C193 /* Build configuration list for PBXProject "JGLANEyes_Server" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 967A14FB20A3159C00E4C193;
+			productRefGroup = 967A150520A3159C00E4C193 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				967A150320A3159C00E4C193 /* JGLANEyes_Server */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		967A150220A3159C00E4C193 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				967A150E20A3159E00E4C193 /* Assets.xcassets in Resources */,
+				967A151120A3159E00E4C193 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		967A150020A3159C00E4C193 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96FFE95220A423D7001AAF2D /* GCDAsyncSocket.m in Sources */,
+				96FFE94120A3D754001AAF2D /* JGMacH264HardwareEncoder.m in Sources */,
+				967A150C20A3159C00E4C193 /* ViewController.m in Sources */,
+				967A151420A3159E00E4C193 /* main.m in Sources */,
+				967A150920A3159C00E4C193 /* AppDelegate.m in Sources */,
+				96FFE95120A423D7001AAF2D /* GCDAsyncUdpSocket.m in Sources */,
+				967A151D20A3192A00E4C193 /* JGMacCamera.m in Sources */,
+				96FFE94A20A42047001AAF2D /* JGMacTCPServer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		967A150F20A3159E00E4C193 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				967A151020A3159E00E4C193 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		967A151620A3159E00E4C193 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		967A151720A3159E00E4C193 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		967A151920A3159E00E4C193 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = TYMCF646JW;
+				INFOPLIST_FILE = JGLANEyes_Server/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jimmygao.JGLANEyes-Server";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+			};
+			name = Debug;
+		};
+		967A151A20A3159E00E4C193 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = TYMCF646JW;
+				INFOPLIST_FILE = JGLANEyes_Server/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jimmygao.JGLANEyes-Server";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		967A14FF20A3159C00E4C193 /* Build configuration list for PBXProject "JGLANEyes_Server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				967A151620A3159E00E4C193 /* Debug */,
+				967A151720A3159E00E4C193 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		967A151820A3159E00E4C193 /* Build configuration list for PBXNativeTarget "JGLANEyes_Server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				967A151920A3159E00E4C193 /* Debug */,
+				967A151A20A3159E00E4C193 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 967A14FC20A3159C00E4C193 /* Project object */;
+}
