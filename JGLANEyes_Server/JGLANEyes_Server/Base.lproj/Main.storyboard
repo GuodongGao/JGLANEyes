@@ -710,18 +710,32 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V2q-JZ-H59">
-                                <rect key="frame" x="406" y="2" width="67" height="32"/>
+                                <rect key="frame" x="405" y="2" width="69" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="stop" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GrV-aG-4zF">
+                                <buttonCell key="cell" type="push" title="start" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GrV-aG-4zF">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="StopCapture:" target="XfG-lQ-9wD" id="EmD-xN-a5Z"/>
+                                    <action selector="startOrStopCapture:" target="XfG-lQ-9wD" id="thL-np-kWm"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lie-ic-S8R">
+                                <rect key="frame" x="393" y="51" width="79" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="preset" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kOD-XD-tjc">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="switchPreset:" target="XfG-lQ-9wD" id="wIf-jE-zHH"/>
                                 </connections>
                             </button>
                         </subviews>
                     </view>
+                    <connections>
+                        <outlet property="btnPreset" destination="lie-ic-S8R" id="6sd-dx-X40"/>
+                    </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -43,6 +43,8 @@
         return;
     }else{
         NSLog(@"server: start listening on port :%d...",MY_PORT);
+     
+//        [self.socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
     }
 }
 
@@ -72,6 +74,24 @@
     [[self.clientSockets objectAtIndex:0] writeData:videoData withTimeout:-1 tag:0];
 }
 
+- (void)sendMsg:(NSString *)msg{
+    JG_ProtocolHeader protocolHeader;
+    uint32_t headerLen = sizeof(protocolHeader);
+    memset((void *)&protocolHeader, 0, headerLen);
+    
+    NSData *msgData = [msg dataUsingEncoding:NSUTF8StringEncoding];
+    protocolHeader.header = 'm';
+    protocolHeader.dataLength = (uint32_t)[msgData length];
+    NSData *protocalData = [NSData dataWithBytes:&protocolHeader length:headerLen];
+    
+    NSMutableData *packetData = [NSMutableData data];
+    [packetData appendData:protocalData];
+    [packetData appendData:msgData];
+    
+    NSLog(@"server: send msg: header:%d,%@, content:%lu,",headerLen,protocalData,(unsigned long)msgData.length);
+    [[self.clientSockets objectAtIndex:0] writeData:packetData withTimeout:-1 tag:0];
+}
+
 #pragma mark GCDAsynSocketDelegate
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket{
     if(self.readyBlock){
@@ -83,7 +103,8 @@
     UInt16 clientPort = [newSocket connectedPort];
     NSLog(@"server: accept new connect from host : %@:%d ",clientIP,clientPort);
     
-    
+    [[self.clientSockets objectAtIndex:0] readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
+    NSLog(@"server: start read data...");
 //    NSString *welcomeMsg = @"Welcome to the AsyncSocket Echo Server\r\n";
 //    NSData *welcomeData = [welcomeMsg dataUsingEncoding:NSUTF8StringEncoding];
 //    NSLog(@"server: start write welcome message...");
@@ -92,29 +113,37 @@
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
-    NSLog(@"%@,%s",NSStringFromClass([self class]),__FUNCTION__);
-
-    if(tag == ECHO_MSG){
-        NSString *msg = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"server: did read echo msg : %@",msg);
-        NSString *echo1 = @"hi,how are you?\r\n";
-        NSLog(@"server: start write echo message...:%@",echo1);
-        NSData *echodata = [echo1 dataUsingEncoding:NSUTF8StringEncoding];
-        [sock writeData:echodata  withTimeout:-1 tag:ECHO_MSG];
-    }
+//    NSLog(@"%@,%s",NSStringFromClass([self class]),__FUNCTION__);
+//
+//    if(tag == ECHO_MSG){
+//        NSString *msg = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+//        NSLog(@"server: did read echo msg : %@",msg);
+//        NSString *echo1 = @"hi,how are you?\r\n";
+//        NSLog(@"server: start write echo message...:%@",echo1);
+//        NSData *echodata = [echo1 dataUsingEncoding:NSUTF8StringEncoding];
+//        [sock writeData:echodata  withTimeout:-1 tag:ECHO_MSG];
+//    }
+  
+    //去掉\r\n
+    NSData *msgData = [data subdataWithRange:NSMakeRange(0, data.length-2)];
+    NSString *receiveMsg = [[NSString alloc]initWithData:msgData encoding:NSUTF8StringEncoding];
+    
+    [self.delegate didReceiveMsgFromClient:receiveMsg];
+    NSLog(@"server info : receive msg from client :%@",receiveMsg);
+    [[self.clientSockets objectAtIndex:0] readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag{
     // Echo message back to client
-    if (tag == ECHO_MSG)
-    {
-        NSLog(@"server: did write echo message...");
-    }
-    if (tag == WELCOME_MSG){
-        NSLog(@"server: did write welcome message");
-        NSLog(@"server: start waiting for reading echo message...");
-        [sock readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:ECHO_MSG];
-    }
-    NSLog(@"%@,%s",NSStringFromClass([self class]),__FUNCTION__);
+//    if (tag == ECHO_MSG)
+//    {
+//        NSLog(@"server: did write echo message...");
+//    }
+//    if (tag == WELCOME_MSG){
+//        NSLog(@"server: did write welcome message");
+//        NSLog(@"server: start waiting for reading echo message...");
+//        [sock readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:ECHO_MSG];
+//    }
+//    NSLog(@"%@,%s",NSStringFromClass([self class]),__FUNCTION__);
 }
 @end

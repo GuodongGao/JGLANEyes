@@ -8,27 +8,34 @@
 
 #import <Foundation/Foundation.h>
 #import "GCDAsyncSocket.h"
-
+//#define TEST
 typedef enum {
     JGControlTypeCapture,
     JGControlTypeSwitchCamera
 }JG_ControlType;
 
+//client to server
+#define kChangeResolution @"ChangeResolution"
+#define kStartOrStop      @"StartOrStop"
 
+//server to client
+#define kStartVideoTransfer @"StartVideoTransfer"
+#define kStopVideoTransfer @"StopVideoTransfer"
 /*****消息头
                         |header| datalength|
-                           1        4
+                           4        4
 ***/
 
 
 typedef struct protocolHeader{
-    uint8_t protocolHeader;   //'m', 'd'
+    uint8_t header;   //'m', 'd'
     uint32_t dataLength;
 }JG_ProtocolHeader;
 
 @protocol JGTCPClientReceiveDelegate <NSObject>
 @optional
 - (void)didReceiveVideoData:(NSData *)data;
+- (void)didReceiveMsg:(NSString *)str;
 @end
 
 
@@ -38,4 +45,6 @@ typedef struct protocolHeader{
 
 - (BOOL)startTCPConnectionWithHost:(NSString*)host onPort:(uint16_t)port error:(NSError **)errPtr;
 - (void)stopTCPConnection;
+
+- (void)sendMsg:(NSString *)msg;
 @end

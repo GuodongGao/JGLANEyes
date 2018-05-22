@@ -16,4 +16,5 @@ typedef void (^DecodeDataBlock) (CVPixelBufferRef buffer);
 
 - (void)decodeVideoData:(uint8_t *)data length:(size_t)length andReturnedDecodedData:(DecodeDataBlock)block;
 - (void)endDecode;
+- (void)resetDecode; // called when resolution changed;
 @end

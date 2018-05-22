@@ -8,7 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, JGFillMode) {
+    JGFillMode_AspectRatio,         //default
+    JGFillMode_Stretch,
+    JGFillMode_AspectFillRatio,
+};
+
 @interface JGVideoGLView : UIView
+@property (assign, nonatomic) JGFillMode fillMode;
 
 - (void)setupGLView;
 - (void)displayPixelBuffer:(CVPixelBufferRef)pixelBuffer;

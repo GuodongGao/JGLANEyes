@@ -15,6 +15,8 @@
 {
     VTCompressionSessionRef _session;
     dispatch_queue_t _queue;
+    
+    BOOL isReadyForEncoding;
 }
 
 - (instancetype)init{
@@ -24,113 +26,124 @@
         _fps = 30;
         _bitrate = 5*1000*1000; //610kB
         
-//        _queue = dispatch_queue_create("com.jimmygao.h264encoderqueue", DISPATCH_QUEUE_SERIAL);
+        _queue = dispatch_queue_create("com.jimmygao.h264encoderqueue", DISPATCH_QUEUE_SERIAL);
         _session = nil;
+        
+        isReadyForEncoding = NO;
     }
     return self;
 }
 
 - (void)prepareEncoderWithWidth:(int)width andHeight:(int)height{
  
-    _width = width;
-    _height = height;
-    
-    OSStatus status = noErr;
-    //查询机器支持的编码器
-    CFArrayRef ref;
-    VTCopyVideoEncoderList(NULL, &ref);
-    NSLog(@"encoder list = %@",(__bridge NSArray*)ref);
-    CFRelease(ref);
-    
-    //打开视频硬编码器
-    CFMutableDictionaryRef encodeSpecific = NULL;
-    CFStringRef key = kVTVideoEncoderSpecification_EnableHardwareAcceleratedVideoEncoder;
-    CFBooleanRef value = kCFBooleanTrue;
-    CFStringRef key1 = kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder;
-    CFBooleanRef value1 = kCFBooleanTrue;
-    CFStringRef key2 = kVTVideoEncoderSpecification_EncoderID;
-    CFStringRef value2 = CFSTR("com.apple.videotoolbox.videoencoder.h264.gva");
-    
-    encodeSpecific = CFDictionaryCreateMutable(NULL, 3, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    CFDictionaryAddValue(encodeSpecific, key, value);
-    CFDictionaryAddValue(encodeSpecific, key1, value1);
-    CFDictionaryAddValue(encodeSpecific, key2, value2);
-    
-    //指定原始图像格式
-    SInt32 cvPixelFormatTypeValue = k2vuyPixelFormat;
-    CFDictionaryRef emptyDict = CFDictionaryCreate(kCFAllocatorDefault, nil, nil, 0, nil, nil);
-    CFNumberRef cvPixelFormatType = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, (const void*)(&(cvPixelFormatTypeValue)));
-    CFNumberRef frameW = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, (const void*)(&(width)));
-    CFNumberRef frameH = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, (const void*)(&(height)));
-    
-    const void *pixelBufferOptionsDictKeys[] = { kCVPixelBufferPixelFormatTypeKey,
-        kCVPixelBufferWidthKey,  kCVPixelBufferHeightKey, kCVPixelBufferIOSurfacePropertiesKey};
-    const void *pixelBufferOptionsDictValues[] = { cvPixelFormatType,  frameW, frameH, emptyDict};
-    CFDictionaryRef pixelBufferOptions = CFDictionaryCreate(kCFAllocatorDefault, pixelBufferOptionsDictKeys, pixelBufferOptionsDictValues, 4, nil, nil);
-    
-    //创建编码器
-    status = VTCompressionSessionCreate(NULL, self.width, self.height, kCMVideoCodecType_H264, encodeSpecific, pixelBufferOptions, NULL, didCompressFinished, (__bridge void * _Nullable)(self), &(_session));
-
-    CFRelease(pixelBufferOptions);
-    
-    if(status != noErr){
-         NSLog( @"create session: resolution:(%d,%d)  fps:(%d)",self.width,self.height,self.fps);
-    }
-   
-    if(_session){
-        //检查当前是否正在使用硬编
-        CFBooleanRef b = NULL;
-        VTSessionCopyProperty(_session, kVTCompressionPropertyKey_UsingHardwareAcceleratedVideoEncoder, NULL, &b);
-        if (b== kCFBooleanTrue) {
-            NSLog(@"Check result: Using hardware encoder now!");
-        }else{
-            NSLog(@"Check result: Not using hardware encoder now!");
-            NSAssert(b == kCFBooleanTrue, @"Not using hardware encoder now");
+    dispatch_sync(_queue, ^{
+        
+        self->_width = width;
+        self->_height = height;
+        
+        OSStatus status = noErr;
+        //查询机器支持的编码器
+        CFArrayRef ref;
+        VTCopyVideoEncoderList(NULL, &ref);
+        NSLog(@"encoder list = %@",(__bridge NSArray*)ref);
+        CFRelease(ref);
+        
+        //打开视频硬编码器
+        CFMutableDictionaryRef encodeSpecific = NULL;
+        CFStringRef key = kVTVideoEncoderSpecification_EnableHardwareAcceleratedVideoEncoder;
+        CFBooleanRef value = kCFBooleanTrue;
+        CFStringRef key1 = kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder;
+        CFBooleanRef value1 = kCFBooleanTrue;
+        CFStringRef key2 = kVTVideoEncoderSpecification_EncoderID;
+        CFStringRef value2 = CFSTR("com.apple.videotoolbox.videoencoder.h264.gva");
+        
+        encodeSpecific = CFDictionaryCreateMutable(NULL, 3, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        CFDictionaryAddValue(encodeSpecific, key, value);
+        CFDictionaryAddValue(encodeSpecific, key1, value1);
+        CFDictionaryAddValue(encodeSpecific, key2, value2);
+        
+        //指定原始图像格式
+        SInt32 cvPixelFormatTypeValue = k2vuyPixelFormat;
+        CFDictionaryRef emptyDict = CFDictionaryCreate(kCFAllocatorDefault, nil, nil, 0, nil, nil);
+        CFNumberRef cvPixelFormatType = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, (const void*)(&(cvPixelFormatTypeValue)));
+        CFNumberRef frameW = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, (const void*)(&(width)));
+        CFNumberRef frameH = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, (const void*)(&(height)));
+        
+        const void *pixelBufferOptionsDictKeys[] = { kCVPixelBufferPixelFormatTypeKey,
+            kCVPixelBufferWidthKey,  kCVPixelBufferHeightKey, kCVPixelBufferIOSurfacePropertiesKey};
+        const void *pixelBufferOptionsDictValues[] = { cvPixelFormatType,  frameW, frameH, emptyDict};
+        CFDictionaryRef pixelBufferOptions = CFDictionaryCreate(kCFAllocatorDefault, pixelBufferOptionsDictKeys, pixelBufferOptionsDictValues, 4, nil, nil);
+        
+        //创建编码器
+        status = VTCompressionSessionCreate(NULL, self.width, self.height, kCMVideoCodecType_H264, encodeSpecific, pixelBufferOptions, NULL, didCompressFinished, (__bridge void * _Nullable)(self), &(self->_session));
+        
+        CFRelease(pixelBufferOptions);
+        
+        if(status != noErr){
+            NSLog( @"create session: resolution:(%d,%d)  fps:(%d)",self.width,self.height,self.fps);
         }
         
-        //设置编码器属性
-        status = VTSessionSetProperty(_session, kVTCompressionPropertyKey_RealTime,kCFBooleanTrue);
-        status = VTSessionSetProperty(_session, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Main_AutoLevel);
-        status = VTSessionSetProperty(_session, kVTCompressionPropertyKey_H264EntropyMode, kVTH264EntropyMode_CAVLC);
-        status = VTSessionSetProperty(_session, kVTCompressionPropertyKey_AllowFrameReordering, kCFBooleanFalse);
-
-        
-        //设置帧率
-        int temp = self.fps;
-        CFNumberRef refFPS = CFNumberCreate(NULL, kCFNumberSInt32Type, &temp);
-        status = VTSessionSetProperty(_session, kVTCompressionPropertyKey_ExpectedFrameRate, refFPS);
-        CFRelease(refFPS);
-
-        //设置平均码率
-        temp = self.bitrate;
-        CFNumberRef refBitrate = CFNumberCreate(NULL, kCFNumberSInt32Type, &temp);
-        VTSessionSetProperty(_session, kVTCompressionPropertyKey_AverageBitRate, refBitrate);
-        CFRelease(refBitrate);
-
-        //设置关键帧时间间隔
-        temp = 1;
-        CFNumberRef ref = CFNumberCreate(NULL, kCFNumberSInt32Type, &temp);
-        VTSessionSetProperty(_session, kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, ref);
-        CFRelease(ref);
-
-        //最大缓冲帧数
-        temp = 3;
-        CFNumberRef refFrameDelay = CFNumberCreate(NULL, kCFNumberSInt32Type, &temp);
-        status = VTSessionSetProperty(_session, kVTCompressionPropertyKey_MaxFrameDelayCount, refFrameDelay);
-        CFRelease(refFrameDelay);
-
-        status = VTCompressionSessionPrepareToEncodeFrames(_session);
-    }
+        if(self->_session){
+            //检查当前是否正在使用硬编
+            CFBooleanRef b = NULL;
+            VTSessionCopyProperty(self->_session, kVTCompressionPropertyKey_UsingHardwareAcceleratedVideoEncoder, NULL, &b);
+            if (b== kCFBooleanTrue) {
+                NSLog(@"Check result: Using hardware encoder now!");
+            }else{
+                NSLog(@"Check result: Not using hardware encoder now!");
+                NSAssert(b == kCFBooleanTrue, @"Not using hardware encoder now");
+            }
+            
+            //设置编码器属性
+            status = VTSessionSetProperty(self->_session, kVTCompressionPropertyKey_RealTime,kCFBooleanTrue);
+            status = VTSessionSetProperty(self->_session, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Main_AutoLevel);
+            status = VTSessionSetProperty(self->_session, kVTCompressionPropertyKey_H264EntropyMode, kVTH264EntropyMode_CAVLC);
+            status = VTSessionSetProperty(self->_session, kVTCompressionPropertyKey_AllowFrameReordering, kCFBooleanFalse);
+            
+            
+            //设置帧率
+            int temp = self.fps;
+            CFNumberRef refFPS = CFNumberCreate(NULL, kCFNumberSInt32Type, &temp);
+            status = VTSessionSetProperty(self->_session, kVTCompressionPropertyKey_ExpectedFrameRate, refFPS);
+            CFRelease(refFPS);
+            
+            //设置平均码率
+            temp = self.bitrate;
+            CFNumberRef refBitrate = CFNumberCreate(NULL, kCFNumberSInt32Type, &temp);
+            VTSessionSetProperty(self->_session, kVTCompressionPropertyKey_AverageBitRate, refBitrate);
+            CFRelease(refBitrate);
+            
+            //设置关键帧时间间隔
+            temp = 1;
+            CFNumberRef ref = CFNumberCreate(NULL, kCFNumberSInt32Type, &temp);
+            VTSessionSetProperty(self->_session, kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, ref);
+            CFRelease(ref);
+            
+            //最大缓冲帧数
+            temp = 3;
+            CFNumberRef refFrameDelay = CFNumberCreate(NULL, kCFNumberSInt32Type, &temp);
+            status = VTSessionSetProperty(self->_session, kVTCompressionPropertyKey_MaxFrameDelayCount, refFrameDelay);
+            CFRelease(refFrameDelay);
+            
+            status = VTCompressionSessionPrepareToEncodeFrames(self->_session);
+            
+            self->isReadyForEncoding = YES;
+        }
+    });
 }
 
 - (void)tearDownEncoder{
-    if(_session){
-        VTCompressionSessionCompleteFrames(_session, kCMTimeInvalid);
-        VTCompressionSessionInvalidate(_session);
-        CFRelease(_session);
-        _session = NULL;
-        NSLog(@"%s",__FUNCTION__);
-    }
+    
+    dispatch_sync(_queue, ^{
+        
+        if(self->_session){
+            VTCompressionSessionCompleteFrames(self->_session, kCMTimeInvalid);
+            VTCompressionSessionInvalidate(self->_session);
+            CFRelease(self->_session);
+            self->_session = NULL;
+            NSLog(@"%s",__FUNCTION__);
+        }
+    });
 }
 
 - (void)resetEncoderWithWidth:(int)width andHeight:(int) height{
@@ -144,12 +157,20 @@
 - (void)pushFrame:(CMSampleBufferRef)buffer andReturnedEncodedData:(ReturnDataBlock)block{
     
     self.returnDataBlock = block;
-
+    
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(buffer);
-    CMTime pts = CMSampleBufferGetPresentationTimeStamp(buffer);
-    OSStatus status = VTCompressionSessionEncodeFrame(_session, imageBuffer, pts, kCMTimeInvalid, NULL, NULL, NULL);
-    if(status != noErr){
-        NSLog(@"encode frame error");
+    
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    if((width == _width) && (height == _height)){
+        CMTime pts = CMSampleBufferGetPresentationTimeStamp(buffer);
+        OSStatus status = VTCompressionSessionEncodeFrame(_session, imageBuffer, pts, kCMTimeInvalid, NULL, NULL, NULL);
+        if(status != noErr){
+            NSLog(@"encode frame error");
+        }
+    }else{
+        [self resetEncoderWithWidth:(int)width andHeight:(int)height];
     }
 }
 
@@ -196,6 +217,7 @@ void didCompressFinished(
                          VTEncodeInfoFlags infoFlags,
                          CM_NULLABLE CMSampleBufferRef sampleBuffer ){
     
+    
     if(status != 0){
         return;
     }
@@ -204,6 +226,7 @@ void didCompressFinished(
         NSLog(@"didCompressH264 data is not ready ");
         return;
     }
+    
     
     JGMacH264HardwareEncoder *encoder = (__bridge JGMacH264HardwareEncoder*)outputCallbackRefCon;
     

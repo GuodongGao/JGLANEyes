@@ -14,11 +14,6 @@
 #define STRINGIZE2(x) STRINGIZE(x)
 #define SHADER_STRING(text) @STRINGIZE2(text)  //加@
 
-typedef NS_ENUM(NSUInteger, JGFillMode) {
-    JGFillMode_AspectRatio,         //default
-    JGFillMode_Stretch,
-    JGFillMode_AspectFillRatio,
-};
 
 enum{
     ATTRB_POS,

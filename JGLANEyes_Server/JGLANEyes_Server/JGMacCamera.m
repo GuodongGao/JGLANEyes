@@ -18,6 +18,10 @@
     AVCaptureVideoPreviewLayer *_preview;
     
     dispatch_queue_t _videoqueue;
+    
+    
+    size_t _width;
+    size_t _height;
 }
 @end
 
@@ -79,12 +83,33 @@
     if([_captureSession isRunning]){
         [_captureSession stopRunning];
     }
+    self.sample = nil;
 }
 
+- (void)setCaptureSessionPreset:(NSString *)captureSessionPreset{
+    _captureSessionPreset = captureSessionPreset;
+    
+    [_captureSession beginConfiguration];
+    if([_captureSession canSetSessionPreset:_captureSessionPreset]){
+        [_captureSession setSessionPreset:_captureSessionPreset];
+    }else{
+        NSLog(@"Camera error: current device can't set %@",captureSessionPreset);
+    }
+    [_captureSession commitConfiguration];
+}
 
 #pragma mark AVCaptureVideoDataOutputSampleBufferDelegate;
 -(void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
+    CVImageBufferRef imageBuf = CMSampleBufferGetImageBuffer(sampleBuffer);
+    size_t width = CVPixelBufferGetWidth(imageBuf);
+    size_t height = CVPixelBufferGetHeight(imageBuf);
+    if((width != _width) || (height != _height)){
+        _width = width;
+        _height = height;
+        NSLog(@"JGMacCamera Info : New size capture image:(%zu,%zu)",width,height);
+        NSLog(@"JGMacCamera Info : New size image : %@",imageBuf);
+    }
     if(self.sample){
         self.sample(sampleBuffer);
     }

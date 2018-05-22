@@ -6,8 +6,12 @@
 //  Copyright © 2018年 mtgao. All rights reserved.
 //
 
-#define SERVER_IP @"192.168.2.1"
+#define SERVER_IP @"192.168.3.1"
 #define SERVER_PORT 20001
+
+#define Test_IP @"172.20.65.205"
+#define Test_PORT 9999
+
 
 #import "ViewController.h"
 #import "JGH264Decoder.h"
@@ -15,22 +19,34 @@
 #import "JGTCPClient.h"
 
 @interface ViewController ()<JGTCPClientReceiveDelegate>
+//显示
 @property (weak, nonatomic) IBOutlet UILabel *lblBirate;
+@property (weak, nonatomic) IBOutlet UILabel *lblMsg;
+@property (weak, nonatomic) IBOutlet UILabel *lblState;
+@property (weak, nonatomic) IBOutlet UIButton *btnStartOrStop;
+
+//成员
 @property (nonatomic,strong) JGVideoGLView *glView;
 @property (nonatomic,strong) JGH264Decoder *decoder;
 @property (nonatomic,strong) JGTCPClient *tcpClient;
-@property (nonatomic,strong) dispatch_source_t oneSecondsTimer;
 
+//统计
+@property (nonatomic,strong) dispatch_source_t oneSecondsTimer;
 @property (nonatomic, assign) NSUInteger dataBytes;
+@property (nonatomic, assign) size_t width;
+@property (nonatomic, assign) size_t height;
+@property (nonatomic, assign) NSUInteger fps;
 @end
 
 @implementation ViewController
+
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     //设置display View
-    self.glView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height/2);
+    self.glView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.width);
     [self.view addSubview:self.glView];
     [self.glView setupGLView];
     
@@ -42,7 +58,11 @@
     self.tcpClient.delegate = self;
     
     NSError *error = nil;
+#ifdef TEST
+    [self.tcpClient startTCPConnectionWithHost:Test_IP onPort:Test_PORT error:&error];
+#else
     [self.tcpClient startTCPConnectionWithHost:SERVER_IP onPort:SERVER_PORT error:&error];
+#endif
     if(error){
         NSLog(@"error:startTcpConnection With Host error");
     }
@@ -54,9 +74,13 @@
     dispatch_source_set_event_handler(self.oneSecondsTimer, ^{
         weak_self.lblBirate.text = [weak_self stringToShowWithByteSize:weak_self.dataBytes];
         weak_self.dataBytes = 0;
+        
+        weak_self.lblState.text = [NSString stringWithFormat:@"Res(%lu,%lu),fps:%ld",weak_self.width,weak_self.height,weak_self.fps];
+        weak_self.fps = 0;
+        weak_self.width = 0;
+        weak_self.height = 0;
     });
     dispatch_resume(self.oneSecondsTimer);
-
 }
 
 - (NSString *)stringToShowWithByteSize:(NSUInteger)byteSize {
@@ -85,8 +109,54 @@
 
 - (void)didReceiveVideoData:(NSData *)data{
     self.dataBytes += data.length;
+    
+    __weak typeof(self) weak_self = self;
     [self.decoder decodeVideoData:(uint8_t*)data.bytes length:data.length andReturnedDecodedData:^(CVPixelBufferRef buffer) {
+        
+        size_t width = CVPixelBufferGetWidth(buffer);
+        size_t height = CVPixelBufferGetHeight(buffer);
+        NSStringFromCGSize(CGSizeMake(width, height));
+        weak_self.fps ++;
+        weak_self.width = width;
+        weak_self.height = height;
+        
         [self.glView displayPixelBuffer:buffer];
     }];
+}
+
+- (void)didReceiveMsg:(NSString *)str{
+    NSLog(@"client: receive msg:%@",str);
+    if([str isEqualToString:kChangeResolution]){
+        [self.decoder resetDecode];
+    }else if([str isEqualToString:kStartVideoTransfer]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.btnStartOrStop setTitle:@"start transport" forState:UIControlStateNormal];
+        });
+        
+    }else if([str isEqualToString:kStopVideoTransfer]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.btnStartOrStop setTitle:@"stop transport" forState:UIControlStateNormal];
+        });
+    }else{
+        NSLog(@"client error: receive undefined msg;");
+    }
+}
+
+//控制
+- (IBAction)changeFillMode:(id)sender {
+    static int count = 0;
+    self.glView.fillMode = (JGFillMode)count;
+    count ++;
+    if(count == 3){
+        count = 0;
+    }
+}
+- (IBAction)changeResulotion:(id)sender {
+    [self.tcpClient sendMsg:kChangeResolution];
+}
+
+- (IBAction)startOrStopControl:(id)sender {
+    UIButton *btn = (UIButton *)sender;
+    [self.tcpClient sendMsg:kStartOrStop];
 }
 @end

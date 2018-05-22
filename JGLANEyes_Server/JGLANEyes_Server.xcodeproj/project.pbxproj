@@ -13,6 +13,7 @@
 		967A151120A3159E00E4C193 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 967A150F20A3159E00E4C193 /* Main.storyboard */; };
 		967A151420A3159E00E4C193 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A151320A3159E00E4C193 /* main.m */; };
 		967A151D20A3192A00E4C193 /* JGMacCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A151C20A3192A00E4C193 /* JGMacCamera.m */; };
+		96E2B56820B2BFA900211734 /* JGPushSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E2B56720B2BFA900211734 /* JGPushSession.m */; };
 		96FFE94120A3D754001AAF2D /* JGMacH264HardwareEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 96FFE94020A3D754001AAF2D /* JGMacH264HardwareEncoder.m */; };
 		96FFE94A20A42047001AAF2D /* JGMacTCPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 96FFE94920A42047001AAF2D /* JGMacTCPServer.m */; };
 		96FFE95120A423D7001AAF2D /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 96FFE94D20A423D7001AAF2D /* GCDAsyncUdpSocket.m */; };
@@ -32,6 +33,8 @@
 		967A151B20A3192A00E4C193 /* JGMacCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JGMacCamera.h; sourceTree = "<group>"; };
 		967A151C20A3192A00E4C193 /* JGMacCamera.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JGMacCamera.m; sourceTree = "<group>"; };
 		967A152120A32E9900E4C193 /* JGLANEyes_Server.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JGLANEyes_Server.entitlements; sourceTree = "<group>"; };
+		96E2B56620B2BFA900211734 /* JGPushSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JGPushSession.h; sourceTree = "<group>"; };
+		96E2B56720B2BFA900211734 /* JGPushSession.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JGPushSession.m; sourceTree = "<group>"; };
 		96FFE93F20A3D754001AAF2D /* JGMacH264HardwareEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JGMacH264HardwareEncoder.h; sourceTree = "<group>"; };
 		96FFE94020A3D754001AAF2D /* JGMacH264HardwareEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JGMacH264HardwareEncoder.m; sourceTree = "<group>"; };
 		96FFE94820A42047001AAF2D /* JGMacTCPServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JGMacTCPServer.h; sourceTree = "<group>"; };
@@ -83,6 +86,8 @@
 				96FFE94020A3D754001AAF2D /* JGMacH264HardwareEncoder.m */,
 				96FFE94820A42047001AAF2D /* JGMacTCPServer.h */,
 				96FFE94920A42047001AAF2D /* JGMacTCPServer.m */,
+				96E2B56620B2BFA900211734 /* JGPushSession.h */,
+				96E2B56720B2BFA900211734 /* JGPushSession.m */,
 				96FFE94C20A423D7001AAF2D /* GCDAsyncSocket */,
 				967A150D20A3159E00E4C193 /* Assets.xcassets */,
 				967A150F20A3159E00E4C193 /* Main.storyboard */,
@@ -183,6 +188,7 @@
 				967A151420A3159E00E4C193 /* main.m in Sources */,
 				967A150920A3159C00E4C193 /* AppDelegate.m in Sources */,
 				96FFE95120A423D7001AAF2D /* GCDAsyncUdpSocket.m in Sources */,
+				96E2B56820B2BFA900211734 /* JGPushSession.m in Sources */,
 				967A151D20A3192A00E4C193 /* JGMacCamera.m in Sources */,
 				96FFE94A20A42047001AAF2D /* JGMacTCPServer.m in Sources */,
 			);

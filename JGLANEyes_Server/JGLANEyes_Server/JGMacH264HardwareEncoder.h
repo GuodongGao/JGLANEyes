@@ -18,7 +18,7 @@ typedef void (^ReturnDataBlock) (NSData *encodedData);
 @property (assign, nonatomic) int fps;  //todo
 @property (assign, nonatomic) int bitrate; //todo
 
-@property (nonatomic, weak) ReturnDataBlock returnDataBlock;
+@property (nonatomic, copy) ReturnDataBlock returnDataBlock;
 
 - (void)prepareEncoderWithWidth:(int)width andHeight:(int)height;
 - (void)tearDownEncoder;

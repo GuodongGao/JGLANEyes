@@ -55,12 +55,20 @@
         case 0x07:   //sps
              NSLog(@"decoder: sps frame comes");
             _SPSSize = _packetSize - 4;
+            if(_SPS){
+                free(_SPS);
+                _SPS = NULL;
+            }
             _SPS = malloc(_SPSSize);
             memcpy(_SPS, _packetBuf + 4, _SPSSize);
             break;
         case 0x08:   //pps
             NSLog(@"decoder: pps frame comes");
             _PPSSize = _packetSize - 4;
+            if(_PPS){
+                free(_PPS);
+                _PPS = NULL;
+            }
             _PPS = malloc(_PPSSize);
             memcpy(_PPS, _packetBuf + 4, _PPSSize);
             break;
@@ -79,7 +87,7 @@
 
 
 - (void)setupDecoder{
-    BOOL canSetupNewSession = (!_session) && _SPS && _PPS;
+    BOOL canSetupNewSession = (!_session) && _SPS && _PPS;  //没有session，有SPS，PPS才能创建解码session
     if(canSetupNewSession){
         
         //包装CMVideoFormatDescription
@@ -167,15 +175,20 @@
     
     if(_SPS){
         free(_SPS);
+        _SPS = NULL;
     }
 
     if(_PPS){
         free(_PPS);
+        _PPS = NULL;
     }
     _SPSSize = _PPSSize = 0;
 }
 
--(void)dealloc{
+- (void)resetDecode{
+    [self tearDownDecode];
+}
+- (void)dealloc{
     [self tearDownDecode];
 }
 

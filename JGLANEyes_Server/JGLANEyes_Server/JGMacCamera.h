@@ -14,6 +14,7 @@ typedef void (^ReturnedSampleBuffer) (CMSampleBufferRef samplebuffer);
 
 @interface JGMacCamera : NSObject
 
+@property (copy, nonatomic) NSString *captureSessionPreset;
 @property (copy, nonatomic) ReturnedSampleBuffer sample;
 - (instancetype)initWithPreset:(NSString *)preset;
 

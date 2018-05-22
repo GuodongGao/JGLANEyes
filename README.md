@@ -1,6 +1,12 @@
 
 ## Realtime Video Transfer base on LAN(local area network)
 
+### Usage:
+1. Share Mac network such as hot spot
+2. Connect iphone to the network which your mac shared, such as hot spot.
+3. Open 'Terminal' and input 'ifconfig' to get Server IP.  The inet of 'bridge100' is the server ip;
+4. Instead the '#define SERVER_IP @"192.168.3.1"' as the Server IP of yours;
+
 
 ### Mac Server:
 1. Use AVFoundation to capture raw video data

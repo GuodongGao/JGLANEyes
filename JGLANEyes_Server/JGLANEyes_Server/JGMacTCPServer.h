@@ -10,7 +10,13 @@
 #import "GCDAsyncSocket/GCDAsyncSocket.h"
 
 #define MY_PORT 20001
+//client to server
+#define kChangeResolution @"ChangeResolution"
+#define kStartOrStop      @"StartOrStop"
 
+//server to client
+#define kStartVideoTransfer @"StartVideoTransfer"
+#define kStopVideoTransfer @"StopVideoTransfer"
 typedef struct protocolHeader{
     uint32_t header;   //'m', 'd'
     uint32_t dataLength;
@@ -19,13 +25,19 @@ typedef struct protocolHeader{
 
 typedef void (^ReturnReadySingalBlock) (BOOL isReady);
 
+@protocol JGMacTCPServerDelegate<NSObject>
+- (void)didReceiveMsgFromClient:(NSString *)msg;
+@end
+
 @interface JGMacTCPServer : NSObject
 
 @property (nonatomic, strong) GCDAsyncSocket *socket;
 @property (nonatomic, copy) ReturnReadySingalBlock readyBlock;
+@property (nonatomic, weak) id<JGMacTCPServerDelegate> delegate;
 
 - (void)startServerWithReturnSignal:(ReturnReadySingalBlock)isReady;
 - (void)stopServer;
-- (void)transimitVideoDataToClientWithData:(NSData *)data;
 
+- (void)transimitVideoDataToClientWithData:(NSData *)data;
+- (void)sendMsg:(NSString *)msg;
 @end
