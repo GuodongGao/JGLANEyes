@@ -169,11 +169,17 @@ const GLfloat kColorConversion601FullRange[] = {
         
         [self cleanUpTextures];
 
-        _preferredConversion = kColorConversion601FullRange;
-        
         int frameWidth = (int)CVPixelBufferGetWidth(pixelBuffer);
         int frameHeight = (int)CVPixelBufferGetHeight(pixelBuffer);
 
+        CFTypeRef colorAttachments = CVBufferGetAttachment(pixelBuffer, kCVImageBufferYCbCrMatrixKey, NULL);
+        if (colorAttachments == kCVImageBufferYCbCrMatrix_ITU_R_601_4) {
+            _preferredConversion = kColorConversion601FullRange;
+        }
+        else {
+            _preferredConversion = kColorConversion709;
+        }
+        
         _inputImageWidth = frameWidth;
         _inputImageHeight = frameHeight;
         
@@ -370,7 +376,7 @@ const GLfloat kColorConversion601FullRange[] = {
 
 - (void)loadProgram{
     //创建，编译两个着色器
-    [self loadVertexShaderString:kJGVertexShaderString fragmentShaderString:kJGYUVVidoeRangeConversionFragmentShaderString];
+    [self loadVertexShaderString:kJGVertexShaderString fragmentShaderString:kJGYUVFullRangeConversionFragmentShaderString];
     
     //创建program
     _program = glCreateProgram();
