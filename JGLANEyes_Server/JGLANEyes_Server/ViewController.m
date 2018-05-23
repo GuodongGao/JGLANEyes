@@ -61,13 +61,7 @@
     tcpServer = [[JGMacTCPServer alloc]init];
     tcpServer.delegate = self;
     
-    __weak typeof(self) weakSelf = self;
-    //启动服务器
-    [tcpServer startServerWithReturnSignal:^(BOOL isReady) {
-        __strong typeof(self) strongSelf = weakSelf;
-        strongSelf->isReadyForTCPTransmit = YES;
-    }];
-    
+   
 //    //开始捕捉图像
 //    [camera startCaptureAndOutputSampleBuffer:^(CMSampleBufferRef samplebuffer) {
 //
@@ -89,10 +83,10 @@
 
 - (void)didReceiveMsgFromClient:(NSString *)msg{
     if([msg isEqualToString:kChangeResolution]){
-        NSLog(@"server: do action from client: %@",kChangeResolution);
+        NSLog(@"server info: do action from client: %@",kChangeResolution);
         [self switchPreset:nil];
     }else if([msg isEqualToString:kStartOrStop]){
-        NSLog(@"server: do action from client: %@",kStartOrStop);
+        NSLog(@"server info: do action from client: %@",kStartOrStop);
         [self startOrStopCapture:nil];
     }
 }
@@ -165,6 +159,26 @@
             }
         }];
     }];
+}
+
+- (IBAction)StartOrStopService:(id)sender {
+    static BOOL isStart = NO;
+    __weak typeof(self) weakSelf = self;
+   
+    if(!isStart){
+         //启动服务socket，开始监听服务端口
+        [tcpServer startServerWithReturnSignal:^(BOOL isReady) {
+            __strong typeof(self) strongSelf = weakSelf;
+            strongSelf->isReadyForTCPTransmit = YES;
+        }];
+        isStart = YES;
+    }else{
+        //先关闭采集
+//        [camera stopCapture];
+        //再断开连接
+        [tcpServer stopServer];
+        isStart = NO;
+    }
 }
 
 @end

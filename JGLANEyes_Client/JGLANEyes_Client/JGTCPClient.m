@@ -25,6 +25,8 @@ typedef enum {
 @property (strong, nonatomic) GCDAsyncSocket *socket;
 @property (strong, nonatomic) dispatch_queue_t socketqueue;
 @property (assign, nonatomic) JGProtocoType currentPacketType;
+@property (nonatomic,strong) dispatch_source_t heartbeatTimer;
+@property (nonatomic,assign) NSUInteger heartbeatPacketCount;
 @end
 
 @implementation JGTCPClient
@@ -35,6 +37,34 @@ typedef enum {
         _socket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue:_socketqueue];
     }
     return self;
+}
+
+-(void)dealloc{
+    
+    dispatch_source_cancel(_heartbeatTimer);
+    _heartbeatTimer = nil;
+    
+    if([_socket isConnected]){
+        [_socket disconnect];
+    }
+    _socketqueue = nil;
+    _socket = nil;
+}
+
+- (void)startHeartBeat {
+    if (self.heartbeatTimer) {
+        return;
+    }
+    
+    //后台模式支持
+    self.heartbeatTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    dispatch_source_set_timer(self.heartbeatTimer, DISPATCH_TIME_NOW, 1.0f * NSEC_PER_SEC, 0);
+    __weak typeof(self) weak_self = self;
+    dispatch_source_set_event_handler(self.heartbeatTimer, ^{
+        [weak_self sendMsg:kHeartBeat];
+        [weak_self processHeartbeatPacket];
+    });
+    dispatch_resume(self.heartbeatTimer);
 }
 
 //client到server的消息直接发"字符串\r\n"
@@ -55,8 +85,11 @@ typedef enum {
     return [_socket connectToHost:host onPort:port error:errPtr];
 }
 
-- (void)stopTCPConnection{
     
+- (void)stopTCPConnection{
+    if(_socket.isConnected){
+        [_socket disconnect];
+    }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port{
@@ -71,7 +104,10 @@ typedef enum {
 #ifdef TEST
     [sock readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 #else
+    //连接成功后开始读数据
     [sock readDataToLength:TCP_HEAD_LENGTH withTimeout:-1 tag:0];
+    //连接成功后开始发送心跳包
+    [self startHeartBeat];
 #endif
 }
 
@@ -131,13 +167,43 @@ typedef enum {
     
     NSString *msg = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"client info: receive msg: %@",msg);
-    [self.delegate didReceiveMsg:msg];
+    if([msg isEqualToString:kHeartBeat]){
+        self.heartbeatPacketCount++;
+    }else{
+        [self.delegate didReceiveMsg:msg];
+    }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag{
-    NSLog(@"client info: did write msg");
+//    NSLog(@"client info: did write msg");
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
+    NSLog(@"client info: did disconnect:%@",err);
+    if(err.code == 7){
+        //服务端主动断开客户端的socket，socket can closed by remote peer; error cdoe = 7;
+        [self stopTCPConnection];
+    }else if(err.code == 61){
+        //服务端socket主动断开，还未监听，连接会出现这个错误Code=61 "Connection refused"
+    }
+}
+
+- (void)processHeartbeatPacket{
+    static int i = 0;
+    i++;
+    if(i == 10){ //每10s读取一次心跳包个数
+        
+        NSUInteger count = self.heartbeatPacketCount;
+        NSLog(@"client info: 最近10秒收到%lu个心跳包",(unsigned long)count);
+        if((count<5) && (count>0)){
+            NSLog(@"client info : 网络不稳定，请靠近一点");
+        }else if(count == 0){
+            NSLog(@"client info: 没有收到来自服务端的心跳包");
+            [self.delegate didReceiveMsg:@"need reconnect"];
+
+        }
+        self.heartbeatPacketCount = 0;
+        i = 0;
+    }
 }
 @end

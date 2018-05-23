@@ -56,17 +56,7 @@
     //初始化client
     self.tcpClient = [[JGTCPClient alloc]init];
     self.tcpClient.delegate = self;
-    
-    NSError *error = nil;
-#ifdef TEST
-    [self.tcpClient startTCPConnectionWithHost:Test_IP onPort:Test_PORT error:&error];
-#else
-    [self.tcpClient startTCPConnectionWithHost:SERVER_IP onPort:SERVER_PORT error:&error];
-#endif
-    if(error){
-        NSLog(@"error:startTcpConnection With Host error");
-    }
-    NSLog(@"size of int = %lu",sizeof(int));
+
     
     self.oneSecondsTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     dispatch_source_set_timer(self.oneSecondsTimer, DISPATCH_TIME_NOW,  1.0f * NSEC_PER_SEC, 0);
@@ -81,6 +71,28 @@
         weak_self.height = 0;
     });
     dispatch_resume(self.oneSecondsTimer);
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:)
+                                                 name:UIApplicationWillResignActiveNotification object:nil]; //监听是否触发home键挂起程序，（把程序放在后台执行其他操作）
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification object:nil]; //监听是否重新进入程序程序.（回到程序)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:)
+                                                 name:UIApplicationDidEnterBackgroundNotification object:nil]; //监听是否重新进入程序程序.（回到程序)
+}
+
+-(void)applicationWillResignActive:(NSNotification *)notification{
+    NSLog(@"viewcontroller info :%s",__FUNCTION__);
+}
+
+-(void)applicationDidBecomeActive:(NSNotification *)notification{
+    NSLog(@"viewcontroller info :%s",__FUNCTION__);
+   //进入前台，先要重启解码器
+    [self.decoder resetDecode];
+    //然后重连
+    [self reconnect];
+}
+-(void)applicationDidEnterBackground:(UIApplication *)application{
+    NSLog(@"viewcontroller info :%s",__FUNCTION__);
 }
 
 - (NSString *)stringToShowWithByteSize:(NSUInteger)byteSize {
@@ -137,11 +149,24 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.btnStartOrStop setTitle:@"stop transport" forState:UIControlStateNormal];
         });
+    }else if([str isEqualToString:@"need reconnect"]){
+        //重连
+        [self reconnect];
     }else{
         NSLog(@"client error: receive undefined msg;");
     }
 }
 
+- (void)reconnect{
+    //todo：重连逻辑判定要根据心跳判断网络以及重连次数
+    NSError *error = nil;
+    [self.tcpClient stopTCPConnection];
+    [self.tcpClient startTCPConnectionWithHost:SERVER_IP onPort:SERVER_PORT error:&error];
+    if(error){
+        NSLog(@"error:startTcpConnection With Host error");
+    }
+    NSLog(@"client info: reconnect...");
+}
 //控制
 - (IBAction)changeFillMode:(id)sender {
     static int count = 0;
@@ -156,7 +181,27 @@
 }
 
 - (IBAction)startOrStopControl:(id)sender {
-    UIButton *btn = (UIButton *)sender;
     [self.tcpClient sendMsg:kStartOrStop];
 }
+
+- (IBAction)startConnectToServer:(id)sender {
+    
+    static BOOL isConnected = NO;
+    NSError *error = nil;
+#ifdef TEST
+    [self.tcpClient startTCPConnectionWithHost:Test_IP onPort:Test_PORT error:&error];
+#else
+    if(!isConnected){
+        [self.tcpClient startTCPConnectionWithHost:SERVER_IP onPort:SERVER_PORT error:&error];
+        if(error){
+            NSLog(@"error:startTcpConnection With Host error");
+        }
+        isConnected = YES;
+    }else{
+        [self.tcpClient stopTCPConnection];
+        isConnected = NO;
+    }
+#endif
+}
+
 @end

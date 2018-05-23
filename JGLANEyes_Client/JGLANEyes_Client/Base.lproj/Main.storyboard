@@ -58,6 +58,14 @@
                                     <action selector="startOrStopControl:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Amn-1C-3EC"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jck-tc-RPW">
+                                <rect key="frame" x="190" y="387" width="169" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="startConnect"/>
+                                <connections>
+                                    <action selector="startConnectToServer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="I6n-18-3zo"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G0R-aB-nxl">
                                 <rect key="frame" x="190" y="585" width="123" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

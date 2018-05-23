@@ -32,7 +32,7 @@ enum{
 // 颜色转换常数（YUV到RGB）包括16-235 / 16-240调整（视频系列）
 
 // BT.601, which is the standard for SDTV.
-static const GLfloat kColorConversion601[] = {
+__unused static const GLfloat kColorConversion601[] = {
     1.164,  1.164, 1.164,
     0.0, -0.392, 2.017,
     1.596, -0.813,   0.0,

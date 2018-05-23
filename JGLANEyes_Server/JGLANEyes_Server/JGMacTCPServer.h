@@ -10,6 +10,10 @@
 #import "GCDAsyncSocket/GCDAsyncSocket.h"
 
 #define MY_PORT 20001
+
+//heart beat
+#define kHeartBeat        @"HeartBeat"
+
 //client to server
 #define kChangeResolution @"ChangeResolution"
 #define kStartOrStop      @"StartOrStop"

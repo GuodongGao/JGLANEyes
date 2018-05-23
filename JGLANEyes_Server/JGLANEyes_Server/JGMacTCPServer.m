@@ -15,6 +15,9 @@
 @interface JGMacTCPServer()<GCDAsyncSocketDelegate>
 @property (nonatomic, strong) dispatch_queue_t socketQueue;
 @property (nonatomic, strong) NSMutableArray <GCDAsyncSocket *> *clientSockets;
+
+@property (nonatomic,strong) dispatch_source_t heartbeatTimer;
+@property (nonatomic,assign) NSUInteger heartbeatPacketCount;
 @end
 
 @implementation JGMacTCPServer
@@ -29,9 +32,33 @@
     return self;
 }
 - (void)dealloc{
+    dispatch_source_cancel(_heartbeatTimer);
+    _heartbeatTimer = nil;
+    
     [self stopServer];
+    
+    if([_socket isConnected]){
+        [_socket disconnect];
+    }
+    _socketQueue = nil;
+    _socket = nil;
 }
 
+- (void)startHeartBeat {
+    if (self.heartbeatTimer) {
+        return;
+    }
+    
+    //后台模式支持
+    self.heartbeatTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    dispatch_source_set_timer(self.heartbeatTimer, DISPATCH_TIME_NOW, 1.0f * NSEC_PER_SEC, 0);
+    __weak typeof(self) weak_self = self;
+    dispatch_source_set_event_handler(self.heartbeatTimer, ^{
+        [weak_self sendMsg:kHeartBeat];
+        [weak_self processHeartbeatPacket];
+    });
+    dispatch_resume(self.heartbeatTimer);
+}
 
 - (void)startServerWithReturnSignal:(ReturnReadySingalBlock)isReady{
     
@@ -97,6 +124,8 @@
     if(self.readyBlock){
         self.readyBlock(YES);
     }
+    
+    [self.clientSockets removeAllObjects];
     [self.clientSockets addObject:newSocket];
     
     NSString *clientIP = [newSocket connectedHost];
@@ -105,45 +134,47 @@
     
     [[self.clientSockets objectAtIndex:0] readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
     NSLog(@"server: start read data...");
-//    NSString *welcomeMsg = @"Welcome to the AsyncSocket Echo Server\r\n";
-//    NSData *welcomeData = [welcomeMsg dataUsingEncoding:NSUTF8StringEncoding];
-//    NSLog(@"server: start write welcome message...");
-//    [newSocket writeData:welcomeData withTimeout:-1 tag:WELCOME_MSG];
-//    NSLog(@"%@,%s",NSStringFromClass([self class]),__FUNCTION__);
+    //在接收到连接后就开启心跳包
+    [self startHeartBeat];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag{
-//    NSLog(@"%@,%s",NSStringFromClass([self class]),__FUNCTION__);
-//
-//    if(tag == ECHO_MSG){
-//        NSString *msg = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-//        NSLog(@"server: did read echo msg : %@",msg);
-//        NSString *echo1 = @"hi,how are you?\r\n";
-//        NSLog(@"server: start write echo message...:%@",echo1);
-//        NSData *echodata = [echo1 dataUsingEncoding:NSUTF8StringEncoding];
-//        [sock writeData:echodata  withTimeout:-1 tag:ECHO_MSG];
-//    }
   
     //去掉\r\n
     NSData *msgData = [data subdataWithRange:NSMakeRange(0, data.length-2)];
     NSString *receiveMsg = [[NSString alloc]initWithData:msgData encoding:NSUTF8StringEncoding];
     
-    [self.delegate didReceiveMsgFromClient:receiveMsg];
+    if([receiveMsg isEqualToString:kHeartBeat]){
+        self.heartbeatPacketCount++;
+    }else{
+        [self.delegate didReceiveMsgFromClient:receiveMsg];
+    }
     NSLog(@"server info : receive msg from client :%@",receiveMsg);
     [[self.clientSockets objectAtIndex:0] readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag{
-    // Echo message back to client
-//    if (tag == ECHO_MSG)
-//    {
-//        NSLog(@"server: did write echo message...");
-//    }
-//    if (tag == WELCOME_MSG){
-//        NSLog(@"server: did write welcome message");
-//        NSLog(@"server: start waiting for reading echo message...");
-//        [sock readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:ECHO_MSG];
-//    }
-//    NSLog(@"%@,%s",NSStringFromClass([self class]),__FUNCTION__);
+
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err{
+    NSLog(@"server info: %s,%@",__FUNCTION__,err);
+}
+
+- (void)processHeartbeatPacket{
+    static int i = 0;
+    i++;
+    if(i == 10){ //每10s读取一次心跳包个数
+        
+        NSUInteger count = self.heartbeatPacketCount;
+        NSLog(@"server info: 最近10秒收到%lu个心跳包",(unsigned long)count);
+        if((count<5) && (count>0)){
+            NSLog(@"server info : 网络不稳定，请靠近一点");
+        }else if(count == 0){
+            NSLog(@"server info: 没有收到来自客户端的心跳包");
+        }
+        self.heartbeatPacketCount = 0;
+        i = 0;
+    }
 }
 @end

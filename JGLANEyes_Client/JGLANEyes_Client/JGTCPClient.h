@@ -14,6 +14,8 @@ typedef enum {
     JGControlTypeSwitchCamera
 }JG_ControlType;
 
+//heart beat
+#define kHeartBeat        @"HeartBeat"
 //client to server
 #define kChangeResolution @"ChangeResolution"
 #define kStartOrStop      @"StartOrStop"
